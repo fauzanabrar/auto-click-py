@@ -1,0 +1,12 @@
+# Ignore virtual environment
+venv/
+
+# Ignore other common files and directories
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.DS_Store
+.env
