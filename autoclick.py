@@ -6,6 +6,7 @@ from pynput.keyboard import Listener as KeyboardListener, Key
 class AutoClickerModel:
     def __init__(self):
         self.recording = False
+        self.auto_clicker = False
 
     def toggle_recording(self):
         self.recording = not self.recording
@@ -18,12 +19,16 @@ class AutoClickerModel:
     def reset(self):
         self.recording = False
     
+    def toggle_auto_clicker(self):
+        self.auto_clicker = not self.auto_clicker
+        return self.auto_clicker
+    
 class AutoClickerView(tk.Tk):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
         self.title("AutoClicker")
-        self.geometry("400x200")
+        self.geometry("400x300")
 
         self.status_label = tk.Label(self, text="Recording: False")
         self.status_label.pack(pady=20)
@@ -42,9 +47,21 @@ class AutoClickerView(tk.Tk):
         self.reset_button = tk.Button(self.record_frame, text="Reset", command=self.controller.reset_records)
         self.reset_button.pack(side=tk.LEFT, padx=5)
 
+        self.auto_label = tk.Label(self, text="Auto Click: False")
+        self.auto_label.pack(pady=20)
+
+        self.auto_click_frame = tk.Frame(self)
+        self.auto_click_frame.pack(pady=10)
+
+        self.auto_click_button = tk.Button(self.auto_click_frame, text="Start Auto Clicker", command=self.controller.toggle_auto_clicker)
+        self.auto_click_button.pack(side=tk.LEFT, padx=5)
+
 
     def update_status(self, status):
         self.status_label.config(text=f"Recording: {status}")
+
+    def update_auto_clicker(self, status):
+        self.auto_label.config(text=f"Auto Click: {status}")
 
 class AutoClickerController:
     def __init__(self, model, view):
@@ -99,6 +116,9 @@ class AutoClickerController:
 
     def stop_records(self):
         self.stop_listeners()
+
+    def toggle_auto_clicker(self):
+        self.view.update_auto_clicker(self.model.toggle_auto_clicker())
 
 
 if __name__ == "__main__":
