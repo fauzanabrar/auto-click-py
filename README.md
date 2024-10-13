@@ -2,6 +2,7 @@
 
 This project just make a record and click with desktop UI using Tkinter python. 
 
+
 ## Features
 - Records clicks poisition
 - Auto click the recorded mouse position
@@ -27,7 +28,7 @@ This project just make a record and click with desktop UI using Tkinter python.
 
 1. Run the script:
   ```bash
-  python auto_click.py
+  python autoclick.py
   ```
 2. Follow the on-screen instructions to record and automate clicks.
 
@@ -41,6 +42,6 @@ To build a standalone executable using PyInstaller, follow these steps:
   ```
 2. Build the executable:
   ```bash
-  pyinstaller --onefile --noconsole auto_click.py
+  pyinstaller autoclick.spec
   ```
 3. The executable will be created in the `dist` directory.

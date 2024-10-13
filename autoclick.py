@@ -5,6 +5,20 @@ from pynput.keyboard import Listener as KeyboardListener, Key
 import time
 import threading
 
+import os
+import sys
+
+def resource_path(relative_path):
+    """ Get the absolute path to the resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 class AutoClickerModel:
     def __init__(self):
         self.records_listener = False
@@ -91,16 +105,16 @@ class AutoClickerView(tk.Tk):
         self.auto_click_toggle_button.pack(side=tk.LEFT, padx=5)
 
         # Adding icons to buttons
-        self.icon_start_listener = tk.PhotoImage(file="icons/icons8-record-32.png").subsample(2, 2)
-        self.icon_toggle_start = tk.PhotoImage(file="icons/icons8-start-32.png").subsample(2, 2)
-        self.icon_reset = tk.PhotoImage(file="icons/icons8-reset-64.png").subsample(2, 2)
+        self.icon_start_listener = tk.PhotoImage(file=resource_path("icons\icons8-record-32.png")).subsample(2, 2)
+        self.icon_toggle_start = tk.PhotoImage(file=resource_path("icons\icons8-start-32.png")).subsample(2, 2)
+        self.icon_reset = tk.PhotoImage(file=resource_path("icons\icons8-reset-64.png")).subsample(2, 2)
 
         self.records_button.config(image=self.icon_start_listener, compound=tk.LEFT)
         self.toggle_records_button.config(image=self.icon_toggle_start, compound=tk.LEFT)
         self.reset_button.config(image=self.icon_reset, compound=tk.LEFT)
 
-        self.icon_auto_start_listener = tk.PhotoImage(file="icons/icons8-record-32.png").subsample(2, 2)
-        self.icon_auto_toggle_start = tk.PhotoImage(file="icons/icons8-start-32.png").subsample(2, 2)
+        self.icon_auto_start_listener = tk.PhotoImage(file=resource_path("icons\icons8-record-32.png")).subsample(2, 2)
+        self.icon_auto_toggle_start = tk.PhotoImage(file=resource_path("icons\icons8-start-32.png")).subsample(2, 2)
 
         self.auto_click_button.config(image=self.icon_auto_start_listener, compound=tk.LEFT)
         self.auto_click_toggle_button.config(image=self.icon_auto_toggle_start, compound=tk.LEFT)
