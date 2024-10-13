@@ -40,12 +40,20 @@ class AutoClickerView(tk.Tk):
         super().__init__()
         self.controller = controller
         self.title("AutoClicker")
-        self.geometry("400x400")
+        self.geometry("400x500")
         self.configure(bg="#2c3e50")
 
         # Title Label
         self.title_label = tk.Label(self, text="AutoClicker", font=("Helvetica", 18, "bold"), bg="#2c3e50", fg="#ecf0f1")
         self.title_label.pack(pady=20)
+
+        # Instructions Frame
+        self.instructions_frame = tk.LabelFrame(self, text="Instructions", padx=10, pady=10, bg="#f1c40f", fg="#2c3e50", font=("Helvetica", 12, "bold"))
+        self.instructions_frame.pack(pady=10, fill="x", padx=20)
+
+        # Instructions Label
+        self.instructions_label = tk.Label(self.instructions_frame, text="Press 'a' to start/stop if listener is active, 'b' to stop all", font=("Helvetica", 10), bg="#f1c40f", fg="#2c3e50", wraplength=350, justify="center")
+        self.instructions_label.pack(pady=10)
 
         # Records Section
         self.records_frame = tk.LabelFrame(self, text="Records", padx=10, pady=10, bg="#34495e", fg="#ecf0f1", font=("Helvetica", 12, "bold"))
@@ -96,26 +104,7 @@ class AutoClickerView(tk.Tk):
 
         self.auto_click_button.config(image=self.icon_auto_start_listener, compound=tk.LEFT)
         self.auto_click_toggle_button.config(image=self.icon_auto_toggle_start, compound=tk.LEFT)
-        # Ensure you have the icons in the specified paths or update the paths accordingly
-        # You can use any icon images you prefer. Here are some example paths:
-        # "path/to/start_listener_icon.png"
-        # "path/to/toggle_start_icon.png"
-        # "path/to/reset_icon.png"
-        # "path/to/auto_start_listener_icon.png"
-        # "path/to/auto_toggle_start_icon.png"
-
-        # Example icons can be downloaded from websites like:
-        # - https://www.flaticon.com/
-        # - https://icons8.com/
-        # - https://www.iconfinder.com/
-
-        # Make sure to download the icons and place them in the correct paths.
-        # Example icons can be downloaded from websites like:
-        # - https://www.flaticon.com/
-        # - https://icons8.com/
-        # - https://www.iconfinder.com/
-
-        # Make sure to download the icons and place them in the correct paths.
+        
     def update_status(self, status):
         self.status_label.config(text=f"Status : {status}")
     
