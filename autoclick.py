@@ -40,40 +40,84 @@ class AutoClickerView(tk.Tk):
         super().__init__()
         self.controller = controller
         self.title("AutoClicker")
-        self.geometry("400x230")
+        self.geometry("400x400")
+        self.configure(bg="#2c3e50")
 
-        # Records
-        self.status_label = tk.Label(self, text="records: False")
-        self.status_label.pack(pady=20)
+        # Title Label
+        self.title_label = tk.Label(self, text="AutoClicker", font=("Helvetica", 18, "bold"), bg="#2c3e50", fg="#ecf0f1")
+        self.title_label.pack(pady=20)
 
-        self.record_frame = tk.Frame(self)
-        self.record_frame.pack(pady=5)
+        # Records Section
+        self.records_frame = tk.LabelFrame(self, text="Records", padx=10, pady=10, bg="#34495e", fg="#ecf0f1", font=("Helvetica", 12, "bold"))
+        self.records_frame.pack(pady=10, fill="x", padx=20)
 
-        self.records_button = tk.Button(self.record_frame, text="Records", command=self.controller.start_records_listener)
+        self.status_label = tk.Label(self.records_frame, text="Status: False", bg="#34495e", fg="#ecf0f1", font=("Helvetica", 10))
+        self.status_label.pack(pady=5)
+
+        self.records_button_frame = tk.Frame(self.records_frame, bg="#34495e")
+        self.records_button_frame.pack(pady=5)
+
+        self.records_button = tk.Button(self.records_button_frame, text="Start Listener", command=self.controller.start_records_listener, bg="#1abc9c", fg="#ecf0f1", font=("Helvetica", 10, "bold"), padx=8, pady=5)
         self.records_button.pack(side=tk.LEFT, padx=5)
 
-        self.toggle_records_button = tk.Button(self.record_frame, text="Start", command=self.controller.toggle_records, state=tk.DISABLED)
+        self.toggle_records_button = tk.Button(self.records_button_frame, text="Start", command=self.controller.toggle_records, state=tk.DISABLED, bg="#e67e22", fg="#ecf0f1", font=("Helvetica", 10, "bold"), padx=8, pady=5)
         self.toggle_records_button.pack(side=tk.LEFT, padx=5)
 
-        self.reset_button = tk.Button(self.record_frame, text="Reset", command=self.confirm_reset)
+        self.reset_button = tk.Button(self.records_button_frame, text="Reset", command=self.confirm_reset, bg="#d35400", fg="#ecf0f1", font=("Helvetica", 10, "bold"), padx=8, pady=5)
         self.reset_button.pack(side=tk.LEFT, padx=5)
 
+        # Auto Clicker Section
+        self.auto_clicker_frame = tk.LabelFrame(self, text="Auto Clicker", padx=10, pady=10, bg="#34495e", fg="#ecf0f1", font=("Helvetica", 12, "bold"))
+        self.auto_clicker_frame.pack(pady=10, fill="x", padx=20)
 
-        # Auto Clicker
-        self.auto_label = tk.Label(self, text="Auto Click: False")
-        self.auto_label.pack(pady=20)
+        self.auto_label = tk.Label(self.auto_clicker_frame, text="Status: False", bg="#34495e", fg="#ecf0f1", font=("Helvetica", 10))
+        self.auto_label.pack(pady=5)
 
-        self.auto_click_frame = tk.Frame(self)
-        self.auto_click_frame.pack(pady=5)
+        self.auto_click_button_frame = tk.Frame(self.auto_clicker_frame, bg="#34495e")
+        self.auto_click_button_frame.pack(pady=5)
 
-        self.auto_click_button = tk.Button(self.auto_click_frame, text="Start Auto Clicker Listener", command=self.controller.start_auto_clicker_listener)
+        self.auto_click_button = tk.Button(self.auto_click_button_frame, text="Start Listener", command=self.controller.start_auto_clicker_listener, bg="#1abc9c", fg="#ecf0f1", font=("Helvetica", 10, "bold"), padx=8, pady=5)
         self.auto_click_button.pack(side=tk.LEFT, padx=5)
 
-        self.auto_click_toggle_button = tk.Button(self.auto_click_frame, text="Start", command=self.controller.toggle_auto_clicker, state=tk.DISABLED)
+        self.auto_click_toggle_button = tk.Button(self.auto_click_button_frame, text="Start", command=self.controller.toggle_auto_clicker, state=tk.DISABLED, bg="#e67e22", fg="#ecf0f1", font=("Helvetica", 10, "bold"), padx=8, pady=5)
         self.auto_click_toggle_button.pack(side=tk.LEFT, padx=5)
 
+        # Adding icons to buttons
+        self.icon_start_listener = tk.PhotoImage(file="icons/icons8-record-32.png").subsample(2, 2)
+        self.icon_toggle_start = tk.PhotoImage(file="icons/icons8-start-32.png").subsample(2, 2)
+        self.icon_reset = tk.PhotoImage(file="icons/icons8-reset-64.png").subsample(2, 2)
+
+        self.records_button.config(image=self.icon_start_listener, compound=tk.LEFT)
+        self.toggle_records_button.config(image=self.icon_toggle_start, compound=tk.LEFT)
+        self.reset_button.config(image=self.icon_reset, compound=tk.LEFT)
+
+        self.icon_auto_start_listener = tk.PhotoImage(file="icons/icons8-record-32.png").subsample(2, 2)
+        self.icon_auto_toggle_start = tk.PhotoImage(file="icons/icons8-start-32.png").subsample(2, 2)
+
+        self.auto_click_button.config(image=self.icon_auto_start_listener, compound=tk.LEFT)
+        self.auto_click_toggle_button.config(image=self.icon_auto_toggle_start, compound=tk.LEFT)
+        # Ensure you have the icons in the specified paths or update the paths accordingly
+        # You can use any icon images you prefer. Here are some example paths:
+        # "path/to/start_listener_icon.png"
+        # "path/to/toggle_start_icon.png"
+        # "path/to/reset_icon.png"
+        # "path/to/auto_start_listener_icon.png"
+        # "path/to/auto_toggle_start_icon.png"
+
+        # Example icons can be downloaded from websites like:
+        # - https://www.flaticon.com/
+        # - https://icons8.com/
+        # - https://www.iconfinder.com/
+
+        # Make sure to download the icons and place them in the correct paths.
+        # Example icons can be downloaded from websites like:
+        # - https://www.flaticon.com/
+        # - https://icons8.com/
+        # - https://www.iconfinder.com/
+
+        # Make sure to download the icons and place them in the correct paths.
     def update_status(self, status):
-        self.status_label.config(text=f"records: {status}")
+        self.status_label.config(text=f"Status : {status}")
     
     def start_records(self):
         if self.controller.model.records_listener:
@@ -90,7 +134,7 @@ class AutoClickerView(tk.Tk):
         self.toggle_records_button.config(text="Stop" if self.controller.model.records else "Start")
 
     def update_auto_clicker(self, status):
-        self.auto_label.config(text=f"Auto Click: {status}")
+        self.auto_label.config(text=f"Status : {status}")
 
     def start_auto_clicker(self):
         if self.controller.model.auto_clicker_listener:
