@@ -2,7 +2,9 @@
 
 This project just make a record and click with desktop UI using Tkinter python. 
 
-![Auto-clicker-tkinter-python](https://github.com/user-attachments/assets/5648080a-fd79-46b4-9b2c-f60a4d70a59a)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5648080a-fd79-46b4-9b2c-f60a4d70a59a" alt="Auto-clicker-tkinter-python">
+</p>a59a)
 
 
 
