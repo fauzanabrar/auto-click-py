@@ -4,20 +4,30 @@ from pynput.keyboard import Listener as KeyboardListener, Key
 
 class AutoClickerModel:
     def __init__(self):
-        self.recording = False
+        self.records_listener = False
+        self.records = False
+        self.auto_clicker_listener = False
         self.auto_clicker = False
 
-    def toggle_recording(self):
-        self.recording = not self.recording
-        return self.recording
+    def start_records_listener(self):
+        self.records_listener = not self.records_listener
+        return self.records_listener
 
-    def stop_recording(self):
-        self.recording = False
-        return self.recording
+    def toggle_records(self):
+        self.records = not self.records
+        return self.records
+
+    def stop_records(self):
+        self.records = False
+        return self.records
     
     def reset(self):
-        self.recording = False
-    
+        self.records = False
+
+    def start_auto_clicker_listener(self):
+        self.auto_clicker_listener = not self.auto_clicker_listener
+        return self.auto_clicker_listener
+
     def toggle_auto_clicker(self):
         self.auto_clicker = not self.auto_clicker
         return self.auto_clicker
@@ -30,16 +40,16 @@ class AutoClickerView(tk.Tk):
         self.geometry("400x300")
 
         # Records
-        self.status_label = tk.Label(self, text="Recording: False")
+        self.status_label = tk.Label(self, text="records: False")
         self.status_label.pack(pady=20)
 
         self.record_frame = tk.Frame(self)
         self.record_frame.pack(pady=10)
 
-        self.records_button = tk.Button(self.record_frame, text="Records", command=self.start_records)
+        self.records_button = tk.Button(self.record_frame, text="Records", command=self.controller.start_records_listener)
         self.records_button.pack(side=tk.LEFT, padx=5)
 
-        self.toggle_records_button = tk.Button(self.record_frame, text="Start", command=self.toggle_records, state=tk.DISABLED)
+        self.toggle_records_button = tk.Button(self.record_frame, text="Start", command=self.controller.toggle_records, state=tk.DISABLED)
         self.toggle_records_button.pack(side=tk.LEFT, padx=5)
 
         self.reset_button = tk.Button(self.record_frame, text="Reset", command=self.controller.reset_records)
@@ -53,38 +63,34 @@ class AutoClickerView(tk.Tk):
         self.auto_click_frame = tk.Frame(self)
         self.auto_click_frame.pack(pady=10)
 
-        self.auto_click_button = tk.Button(self.auto_click_frame, text="Start Auto Clicker Listener", command=self.start_auto_clicker)
+        self.auto_click_button = tk.Button(self.auto_click_frame, text="Start Auto Clicker Listener", command=self.controller.start_auto_clicker_listener)
         self.auto_click_button.pack(side=tk.LEFT, padx=5)
 
-        self.auto_click_toggle_button = tk.Button(self.auto_click_frame, text="Start", command=self.toggle_auto_clicker, state=tk.DISABLED)
+        self.auto_click_toggle_button = tk.Button(self.auto_click_frame, text="Start", command=self.controller.toggle_auto_clicker, state=tk.DISABLED)
         self.auto_click_toggle_button.pack(side=tk.LEFT, padx=5)
 
     def update_status(self, status):
-        self.status_label.config(text=f"Recording: {status}")
+        self.status_label.config(text=f"records: {status}")
     
     def start_records(self):
-        self.controller.start_records_listener()
-        if self.controller.model.recording:
+        if self.controller.model.records_listener:
             self.toggle_records_button.config(state=tk.NORMAL)
         else:
             self.toggle_records_button.config(state=tk.DISABLED)
 
     def toggle_records(self):
-        self.controller.toggle_records()
-        self.toggle_records_button.config(text="Stop" if self.controller.model.recording else "Start")
+        self.toggle_records_button.config(text="Stop" if self.controller.model.records else "Start")
 
     def update_auto_clicker(self, status):
         self.auto_label.config(text=f"Auto Click: {status}")
 
     def start_auto_clicker(self):
-        self.controller.start_auto_clicker_listener()
-        if self.controller.model.auto_clicker:
+        if self.controller.model.auto_clicker_listener:
             self.auto_click_toggle_button.config(state=tk.NORMAL)
         else:
             self.auto_click_toggle_button.config(state=tk.DISABLED)
 
     def toggle_auto_clicker(self):
-        self.controller.toggle_auto_clicker()
         self.auto_click_toggle_button.config(text="Stop" if self.controller.model.auto_clicker else "Start")
 
 class AutoClickerController:
@@ -95,19 +101,22 @@ class AutoClickerController:
         self.keyboard_listener = None
 
     def on_click(self, x, y, button, pressed):
-        if self.model.recording and pressed and button == Button.left:
+        if self.model.records and pressed and button == Button.left:
             with open('clicks.txt', 'a') as f:
                 f.write(f'{x} {y}\n')
 
     def on_press(self, key):
+        print(key)
         try:
             if key.char == 'a':
-                if self.model.auto_clicker:
+                if self.model.auto_clicker_listener:
                     self.toggle_auto_clicker()
-                if self.model.recording:
+                if self.model.records_listener:
                     self.toggle_records()
             elif key.char == 'b':
                 self.stop_listeners()
+                self.view.start_records()
+                self.view.start_auto_clicker()
         except AttributeError:
             pass
 
@@ -131,30 +140,34 @@ class AutoClickerController:
     def reset_records(self):
         self.stop_listeners()
         self.model.reset()
-        self.view.update_status(self.model.recording)
+        self.view.update_status(self.model.records)
         with open('clicks.txt', 'w') as f:
             f.truncate(0)
 
     def start_records_listener(self):
-        if self.model.recording:
+        if self.model.records_listener:
             self.stop_listeners()
         else:
             self.start_listeners()
-        self.view.update_status(self.model.toggle_recording())
+        self.view.update_status(self.model.start_records_listener())
+        self.view.start_records()
 
     def toggle_records(self):
-        self.model.toggle_recording()
+        self.model.toggle_records()
+        self.view.toggle_records()
 
     # Auto Clicker
     def start_auto_clicker_listener(self):
-        if self.model.auto_clicker:
+        if self.model.auto_clicker_listener:
             self.stop_listeners()
         else:
             self.start_listeners()
-        self.view.update_auto_clicker(self.model.toggle_auto_clicker())
+        self.view.update_auto_clicker(self.model.start_auto_clicker_listener())
+        self.view.start_auto_clicker()
 
     def toggle_auto_clicker(self):
         self.model.toggle_auto_clicker()
+        self.view.toggle_auto_clicker()
 
 
 if __name__ == "__main__":
