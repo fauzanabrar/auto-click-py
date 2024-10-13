@@ -112,7 +112,6 @@ class AutoClickerController:
                 f.write(f'{x} {y}\n')
 
     def on_press(self, key):
-        print(key)
         try:
             if key.char == 'a':
                 if self.model.auto_clicker_listener:
@@ -121,13 +120,32 @@ class AutoClickerController:
                     self.toggle_records()
             elif key.char == 'b':
                 self.stop_listeners()
+                self.model.records_listener = False
+                self.model.auto_clicker_listener = False
+                self.model.records = False
+                self.model.auto_clicker = False
                 self.view.start_records()
                 self.view.start_auto_clicker()
+                self.view.update_status(self.model.records_listener)
+                self.view.update_auto_clicker(self.model.auto_clicker_listener)
+                self.view.toggle_records()
+                self.view.toggle_auto_clicker()
+                
         except AttributeError:
             pass
 
-    def click(self, x, y):
-        pass
+    def click(self):
+        clicks = []
+        with open('clicks.txt', 'r') as f:
+            for line in f:
+                x, y = line.split()
+                clicks.append((int(x), int(y)))
+
+        print(clicks)
+        # while self.model.auto_clicker:
+        #     clicks = clicks[::-1]
+        #     for x, y in clicks:
+        #         self.mouse_listener._controller.click(Button.left, 1, x, y)
 
     
     def stop_listeners(self):
@@ -174,6 +192,9 @@ class AutoClickerController:
     def toggle_auto_clicker(self):
         self.model.toggle_auto_clicker()
         self.view.toggle_auto_clicker()
+        if self.model.auto_clicker:
+            self.click()
+        
 
 
 if __name__ == "__main__":
