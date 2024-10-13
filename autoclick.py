@@ -1,7 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
-from pynput.mouse import Listener, Button
+from pynput.mouse import Listener, Button, Controller
 from pynput.keyboard import Listener as KeyboardListener, Key
+import time
+import threading
 
 class AutoClickerModel:
     def __init__(self):
@@ -103,8 +105,10 @@ class AutoClickerController:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        self.mouse_controller = Controller()
         self.mouse_listener = None
         self.keyboard_listener = None
+        self.clicker_thread = None
 
     def on_click(self, x, y, button, pressed):
         if self.model.records and pressed and button == Button.left:
@@ -130,6 +134,8 @@ class AutoClickerController:
                 self.view.update_auto_clicker(self.model.auto_clicker_listener)
                 self.view.toggle_records()
                 self.view.toggle_auto_clicker()
+                if self.clicker_thread is not None:
+                    self.clicker_thread.stop()
                 
         except AttributeError:
             pass
@@ -141,12 +147,16 @@ class AutoClickerController:
                 x, y = line.split()
                 clicks.append((int(x), int(y)))
 
-        print(clicks)
-        # while self.model.auto_clicker:
-        #     clicks = clicks[::-1]
-        #     for x, y in clicks:
-        #         self.mouse_listener._controller.click(Button.left, 1, x, y)
+        def auto_click():
+            while self.model.auto_clicker:
+                for x, y in clicks:
+                    self.mouse_controller.position = (x, y)
+                    self.mouse_controller.click(Button.left, 1)
+                    time.sleep(0.5)
 
+        self.clicker_thread = threading.Thread(target=auto_click)
+        self.clicker_thread.start()
+        
     
     def stop_listeners(self):
         if self.keyboard_listener is not None:
@@ -194,7 +204,6 @@ class AutoClickerController:
         self.view.toggle_auto_clicker()
         if self.model.auto_clicker:
             self.click()
-        
 
 
 if __name__ == "__main__":
