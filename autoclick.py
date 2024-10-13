@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from pynput.mouse import Listener, Button
 from pynput.keyboard import Listener as KeyboardListener, Key
 
@@ -37,14 +38,14 @@ class AutoClickerView(tk.Tk):
         super().__init__()
         self.controller = controller
         self.title("AutoClicker")
-        self.geometry("400x300")
+        self.geometry("400x230")
 
         # Records
         self.status_label = tk.Label(self, text="records: False")
         self.status_label.pack(pady=20)
 
         self.record_frame = tk.Frame(self)
-        self.record_frame.pack(pady=10)
+        self.record_frame.pack(pady=5)
 
         self.records_button = tk.Button(self.record_frame, text="Records", command=self.controller.start_records_listener)
         self.records_button.pack(side=tk.LEFT, padx=5)
@@ -52,7 +53,7 @@ class AutoClickerView(tk.Tk):
         self.toggle_records_button = tk.Button(self.record_frame, text="Start", command=self.controller.toggle_records, state=tk.DISABLED)
         self.toggle_records_button.pack(side=tk.LEFT, padx=5)
 
-        self.reset_button = tk.Button(self.record_frame, text="Reset", command=self.controller.reset_records)
+        self.reset_button = tk.Button(self.record_frame, text="Reset", command=self.confirm_reset)
         self.reset_button.pack(side=tk.LEFT, padx=5)
 
 
@@ -61,7 +62,7 @@ class AutoClickerView(tk.Tk):
         self.auto_label.pack(pady=20)
 
         self.auto_click_frame = tk.Frame(self)
-        self.auto_click_frame.pack(pady=10)
+        self.auto_click_frame.pack(pady=5)
 
         self.auto_click_button = tk.Button(self.auto_click_frame, text="Start Auto Clicker Listener", command=self.controller.start_auto_clicker_listener)
         self.auto_click_button.pack(side=tk.LEFT, padx=5)
@@ -77,6 +78,11 @@ class AutoClickerView(tk.Tk):
             self.toggle_records_button.config(state=tk.NORMAL)
         else:
             self.toggle_records_button.config(state=tk.DISABLED)
+
+    def confirm_reset(self):
+        confirm = messagebox.askyesno("Confirm Reset", "Are you sure you want to reset?")
+        if confirm:
+            self.controller.reset_records()
 
     def toggle_records(self):
         self.toggle_records_button.config(text="Stop" if self.controller.model.records else "Start")
